@@ -20,6 +20,9 @@ public class OpenLAPDataColumn<T> {
 
     /**
      * Constructor that sets the OpenLAPColumnConfigData with the ID, type, required, title and description properties
+     *
+     * @param id         ID of the OpenLAPDataColumn
+     * @param type       OpenLAPColumnDataType of the data of the OpenLAPDataColumn
      * @param isRequired Specifies if the OpenLAPDataColumn is required or not
      */
     public OpenLAPDataColumn(String id, OpenLAPColumnDataType type, boolean isRequired, String title, String description) {
@@ -29,10 +32,11 @@ public class OpenLAPDataColumn<T> {
 
     /**
      * Validates the correspondence of type and ID of another OpenLAPColumnConfigData
+     *
      * @param openLAPColumnConfigData OpenLAPColumnConfigData to be compared with
      * @return true if the compared OpenLAPColumnConfigData Type and ID corresponds to the current
      */
-    public boolean validateConfigurationData(OpenLAPColumnConfigData openLAPColumnConfigData){
+    public boolean validateConfigurationData(OpenLAPColumnConfigData openLAPColumnConfigData) {
         return this.getConfigurationData().validateConfigurationDataCorrespondence(openLAPColumnConfigData);
     }
 
