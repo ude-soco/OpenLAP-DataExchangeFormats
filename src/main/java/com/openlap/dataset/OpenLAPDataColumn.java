@@ -12,9 +12,14 @@ public class OpenLAPDataColumn<T> {
     private ArrayList<T> data;
 
     /**
+     * Standard constructor, sets fields to null.
+     */
+    public OpenLAPDataColumn() {
+        this.configurationData = null;
+    }
+
+    /**
      * Constructor that sets the OpenLAPColumnConfigData with the ID, type, required, title and description properties
-     * @param id ID of the OpenLAPDataColumn
-     * @param type OpenLAPColumnDataType of the data of the OpenLAPDataColumn
      * @param isRequired Specifies if the OpenLAPDataColumn is required or not
      */
     public OpenLAPDataColumn(String id, OpenLAPColumnDataType type, boolean isRequired, String title, String description) {
@@ -51,6 +56,7 @@ public class OpenLAPDataColumn<T> {
     public OpenLAPColumnConfigData getConfigurationData() {
         return configurationData;
     }
+
 
     @Override
     public boolean equals(Object o) {

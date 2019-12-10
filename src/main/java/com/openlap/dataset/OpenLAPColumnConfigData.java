@@ -23,6 +23,7 @@ public class OpenLAPColumnConfigData {
 
     /**
      * Constructor to create a new column with id, type, required, title, and description
+     *
      * @param id
      * @param type
      * @param required
@@ -81,6 +82,7 @@ public class OpenLAPColumnConfigData {
 
     /**
      * Set title of the OpenLAPDataColumn
+     *
      * @param title
      */
     public void setTitle(String title) {
@@ -96,6 +98,7 @@ public class OpenLAPColumnConfigData {
 
     /**
      * Set description of the OpenLAPDataColumn
+     *
      * @param description
      */
     public void setDescription(String description) {
@@ -105,6 +108,7 @@ public class OpenLAPColumnConfigData {
 
     /**
      * Validates the correspondence of type and ID of another OpenLAPColumnConfigData
+     *
      * @param openLAPColumnConfigData OpenLAPColumnConfigData to be compared with
      * @return true if the compared OpenLAPColumnConfigData Type and ID corresponds to the current
      * OpenLAPColumnConfigData
@@ -116,11 +120,11 @@ public class OpenLAPColumnConfigData {
 
     /**
      * Validate the correspondance of the type of another OpenLAPColumnConfigData
+     *
      * @param outputPortConfigData OpenLAPColumnConfigData to be compared with this OpenLAPColumnConfigData
      * @return true if the type is the same and the other OpenLAPColumnConfigData id is not empty or null
      */
-    public boolean validateConfigurationDataTypeFromOutputPort(OpenLAPColumnConfigData outputPortConfigData)
-    {
+    public boolean validateConfigurationDataTypeFromOutputPort(OpenLAPColumnConfigData outputPortConfigData) {
         return outputPortConfigData.getType().equals(this.getType())
                 && (outputPortConfigData.getId() != null && !outputPortConfigData.getId().isEmpty());
     }
@@ -150,6 +154,7 @@ public class OpenLAPColumnConfigData {
 
     /**
      * ToString method attempts to use the json representation of the object.
+     *
      * @return JSON representation of the object
      */
     @Override

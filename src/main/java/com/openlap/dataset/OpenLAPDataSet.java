@@ -34,6 +34,7 @@ public class OpenLAPDataSet {
 
     /**
      * Adds a column to this OpenLAPDataSet. Should be added with the help of the OpenLAPDataColumnFactory
+     *
      * @param column The OpenLAPDataColumn to be added to the OpenLAPDataSet
      * @throws OpenLAPDataColumnException
      */
@@ -41,8 +42,7 @@ public class OpenLAPDataSet {
         String columnId = column.getConfigurationData().getId();
         if (columns.containsKey(columnId) || columnId.isEmpty() || columnId == null)
             throw new OpenLAPDataColumnException(OpenLAPDataColumnException.COLUMN_ALREADY_EXISTS, columnId);
-        else
-        {
+        else {
             columns.put(columnId, column);
         }
     }
@@ -51,13 +51,13 @@ public class OpenLAPDataSet {
      * This method realizes the need for the OpenLAPDataSet to be able to dynamically (on runtime) check wheter a
      * configuration (of the OpenLAPPortConfig) is compatible with the current DataSet. It checks that the types and
      * required fields are present and that the incoming fields are all part of the present OpenLAPDataSet.
+     *
      * @param configuration The configuration to be checked.
      * @return A OpenLAPDataSetConfigValidationResult that contains information about the validity of the
      * configuration and additional information about what fields are problematic in case the validation does not yield
      * a positive result.
      */
-    public OpenLAPDataSetConfigValidationResult validateConfiguration(OpenLAPPortConfig configuration)
-    {
+    public OpenLAPDataSetConfigValidationResult validateConfiguration(OpenLAPPortConfig configuration) {
         // Initialize object with results
         OpenLAPDataSetConfigValidationResult configResult = new OpenLAPDataSetConfigValidationResult();
         // Get the input as a list
@@ -66,26 +66,24 @@ public class OpenLAPDataSet {
 
         // Check for required fields
         validatePresenceRequiredColumns(configResult, values);
-        if(!configResult.isValid()) return configResult;
+        if (!configResult.isValid()) return configResult;
 
         // Check for incoming fields being present
         validateInputColumnsCorrespondence(configResult, values);
-        if(!configResult.isValid()) return configResult;
+        if (!configResult.isValid()) return configResult;
 
-        for(OpenLAPPortMapping mappingEntry: configuration.getMapping())
-        {
+        for (OpenLAPPortMapping mappingEntry : configuration.getMapping()) {
             // Validate types
             OpenLAPColumnConfigData inputColumn = mappingEntry.getInputPort();
-            if (!inputColumn.validateConfigurationDataTypeFromOutputPort(mappingEntry.getOutputPort())){
+            if (!inputColumn.validateConfigurationDataTypeFromOutputPort(mappingEntry.getOutputPort())) {
                 configResult.setValid(false);
                 configResult.appendValidationMessage(String.format("Port %s expected %s, got %s instead.",
                         inputColumn.getId(), inputColumn.getType(), mappingEntry.getOutputPort().getType()));
             }
         }
 
-        if(!configResult.isValid()) return configResult;
-        else
-        {
+        if (!configResult.isValid()) return configResult;
+        else {
             configResult.setValidationMessage(OpenLAPDataSetConfigValidationResult.VALID_CONFIGURATION);
             return configResult;
         }
@@ -97,15 +95,12 @@ public class OpenLAPDataSet {
      * @param onlyRequiredColumns if true, returns only required columns
      * @return A list of the OpenLAPDataColumns that are required
      */
-    public List<OpenLAPDataColumn> getColumnsAsList(boolean onlyRequiredColumns)
-    {
+    public List<OpenLAPDataColumn> getColumnsAsList(boolean onlyRequiredColumns) {
         List<OpenLAPDataColumn> columns = new ArrayList<OpenLAPDataColumn>(this.columns.values());
         if (!onlyRequiredColumns) return columns;
-        else
-        {
+        else {
             List<OpenLAPDataColumn> requiredColumns = new ArrayList<OpenLAPDataColumn>();
-            for (OpenLAPDataColumn column: columns)
-            {
+            for (OpenLAPDataColumn column : columns) {
                 if (column.getConfigurationData().isRequired()) requiredColumns.add(column);
             }
             return requiredColumns;
@@ -114,11 +109,11 @@ public class OpenLAPDataSet {
 
     /**
      * Utility method to get all required columns configuration data
+     *
      * @param onlyRequiredColumnsConfigurationData if true, returns only required columns OpenLAPColumnConfigData
      * @return a list with the OpenLAPColumnConfigData of the required columns
      */
-    public List<OpenLAPColumnConfigData> getColumnsConfigurationData(boolean onlyRequiredColumnsConfigurationData)
-    {
+    public List<OpenLAPColumnConfigData> getColumnsConfigurationData(boolean onlyRequiredColumnsConfigurationData) {
         List<OpenLAPDataColumn> columns;
         if (onlyRequiredColumnsConfigurationData)
             columns = getColumnsAsList(true);
@@ -126,8 +121,7 @@ public class OpenLAPDataSet {
 
         List<OpenLAPColumnConfigData> result = new ArrayList<OpenLAPColumnConfigData>();
 
-        for(OpenLAPDataColumn column : columns)
-        {
+        for (OpenLAPDataColumn column : columns) {
             result.add(column.getConfigurationData());
         }
         return result;
@@ -135,11 +129,11 @@ public class OpenLAPDataSet {
 
     /**
      * Get a list of the OpenLAPColumnConfigData of all the columns of the Dataset
+     *
      * @return Get a list of the OpenLAPColumnConfigData of all the columns of the Dataset
      */
     @JsonIgnore
-    public List<OpenLAPColumnConfigData> getColumnsConfigurationData()
-    {
+    public List<OpenLAPColumnConfigData> getColumnsConfigurationData() {
         return this.getColumnsConfigurationData(false);
     }
 
@@ -153,18 +147,18 @@ public class OpenLAPDataSet {
         List<OpenLAPColumnConfigData> columnsFirstInstance = new ArrayList<>(this.getColumnsConfigurationData());
         List<OpenLAPColumnConfigData> columnsSecondInstance = new ArrayList<>(openLAPDataSetToCompare.getColumnsConfigurationData());
 
-        if(columnsFirstInstance.size() != columnsSecondInstance.size())
+        if (columnsFirstInstance.size() != columnsSecondInstance.size())
             return false;
 
-        for(OpenLAPColumnConfigData columnFirstInstance : columnsFirstInstance){
-            for(int i =0 ; i<columnsSecondInstance.size();i++){
-                if(columnFirstInstance.equals(columnsSecondInstance.get(i))){
+        for (OpenLAPColumnConfigData columnFirstInstance : columnsFirstInstance) {
+            for (int i = 0; i < columnsSecondInstance.size(); i++) {
+                if (columnFirstInstance.equals(columnsSecondInstance.get(i))) {
                     columnsSecondInstance.remove(i);
                     break;
                 }
             }
         }
-        if(columnsSecondInstance.size()==0)
+        if (columnsSecondInstance.size() == 0)
             return true;
         else
             return false;
@@ -174,8 +168,9 @@ public class OpenLAPDataSet {
 
     /**
      * Validates that all the required Columns of the DataSet are in a given list of Columns
+     *
      * @param configResult The config result object that can be modified to contain error messages
-     * @param values The list to be checked if contains all the required values.
+     * @param values       The list to be checked if contains all the required values.
      */
     private void validatePresenceRequiredColumns(OpenLAPDataSetConfigValidationResult configResult,
                                                  List<OpenLAPColumnConfigData> values) {
@@ -184,12 +179,11 @@ public class OpenLAPDataSet {
         // Remove from the list all the items that are in the values
         removeMatchingColumnData(requiredColumnConfigData, values);
         // If there are still elements left, there are missing values.
-        if (requiredColumnConfigData.size()>0){
+        if (requiredColumnConfigData.size() > 0) {
             configResult.setValid(false);
             configResult.appendValidationMessage("Required columns not found");
             // Put message of every column that is not found
-            for (OpenLAPColumnConfigData remainingColumnConfigData:requiredColumnConfigData)
-            {
+            for (OpenLAPColumnConfigData remainingColumnConfigData : requiredColumnConfigData) {
                 configResult.appendValidationMessage(
                         String.format("Column: %s is not found", remainingColumnConfigData.getId())
                 );
@@ -201,8 +195,9 @@ public class OpenLAPDataSet {
 
     /**
      * Check that all the input columns are present on the actual DataSet
+     *
      * @param configResult The config result object that can be modified to contain error messages
-     * @param values The list of columns to be checked if is all contained in the DataSet.
+     * @param values       The list of columns to be checked if is all contained in the DataSet.
      */
     private void validateInputColumnsCorrespondence(OpenLAPDataSetConfigValidationResult configResult,
                                                     List<OpenLAPColumnConfigData> values) {
@@ -212,13 +207,11 @@ public class OpenLAPDataSet {
         // Remove from the list all the items that are in the dataSet Columns
         removeMatchingColumnData(valuesCopy, dataSetColumns);
         // If there are elements left, it means there is a mapping to be done.
-        if(valuesCopy.size()>0)
-        {
+        if (valuesCopy.size() > 0) {
             configResult.setValid(false);
             configResult.appendValidationMessage("Columns not present on the destination DataSet");
             // Put message of every column that is not found
-            for (OpenLAPColumnConfigData remainingColumn:valuesCopy)
-            {
+            for (OpenLAPColumnConfigData remainingColumn : valuesCopy) {
                 configResult.appendValidationMessage(
                         String.format("Column: %s does not exist in the destination dataset", remainingColumn.getId())
                 );
@@ -230,14 +223,14 @@ public class OpenLAPDataSet {
 
     /**
      * Remove the columns of the first parameter that exists on the second parameter
+     *
      * @param original
      * @param removalList
      */
     private void removeMatchingColumnData(List<OpenLAPColumnConfigData> original,
                                           List<OpenLAPColumnConfigData> removalList) {
         //for each element of the removal list check if is valid on the original
-        for (OpenLAPColumnConfigData removalListConfig: removalList)
-        {
+        for (OpenLAPColumnConfigData removalListConfig : removalList) {
             original.removeIf(e -> (e.validateConfigurationDataCorrespondence(removalListConfig)));
         }
     }
